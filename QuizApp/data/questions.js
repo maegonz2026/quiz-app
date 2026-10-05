@@ -125,10 +125,10 @@ const questions = [
   },
   {
     id: "18",
-    question: "Which keyword allows a function to access variables from its surrounding scope?",
-    options: ["closure", "scope", "return", "this"],
-    answer: "closure",
-    explanation: "A closure allows a function to retain access to its lexical environment."
+    question: "What allows a function to access variables from its surrounding scope?",
+    options: ["Closure", "Scope", "Return", "This"],
+    answer: "Closure",
+    explanation: "A closure allows a function to retain access to variables from its surrounding lexical environment."
   },
   {
     id: "19",

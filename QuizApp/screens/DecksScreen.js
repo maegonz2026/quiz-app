@@ -13,66 +13,82 @@ const decks = [
     title: "JavaScript Basics",
     description: "Variables, types, and operators",
     count: "10 cards",
+    questionIds: [
+      "1", "2", "7", "8", "9",
+      "10", "11", "12", "13", "32"
+    ],
   },
   {
     id: "2",
     title: "Functions",
     description: "Functions, parameters, and return values",
     count: "8 cards",
+    questionIds: [
+      "10", "17", "18", "20",
+      "23", "26", "27", "28"
+    ],
   },
   {
     id: "3",
     title: "Arrays",
     description: "Array methods and manipulation",
     count: "8 cards",
+    questionIds: [
+      "3", "4", "5", "6",
+      "14", "15", "16", "30"
+    ],
   },
   {
     id: "4",
     title: "Modern JavaScript",
     description: "ES6+, promises, async and await",
     count: "9 cards",
+    questionIds: [
+      "17", "24", "25", "27", "28",
+      "29", "31", "33", "35"
+    ],
   },
 ];
 
 export default function DecksScreen({ navigation }) {
+  function openDeck(deck) {
+    navigation.navigate("Flashcards", {
+      deck: deck,
+    });
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <Text style={styles.title}>Study Decks</Text>
 
         <Text style={styles.subtitle}>
-          Choose a topic or create your own deck.
+          Choose a topic to start studying.
         </Text>
-
-        <Pressable
-          style={styles.createButton}
-          onPress={() => navigation.navigate("CreateDeck")}
-        >
-          <Text style={styles.createText}>+ Create Custom Deck</Text>
-        </Pressable>
       </View>
 
       <FlatList
         data={decks}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <Pressable
             style={styles.card}
-            onPress={() =>
-              navigation.navigate("Flashcards", {
-                deck: item,
-              })
-            }
+            onPress={() => openDeck(item)}
           >
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
+              <Text style={styles.cardTitle}>
+                {item.title}
+              </Text>
 
               <Text style={styles.cardDescription}>
                 {item.description}
               </Text>
 
-              <Text style={styles.count}>{item.count}</Text>
+              <Text style={styles.count}>
+                {item.count}
+              </Text>
             </View>
 
             <Text style={styles.arrow}>›</Text>
@@ -104,20 +120,6 @@ const styles = StyleSheet.create({
     color: "#64748b",
     marginTop: 5,
     fontSize: 15,
-  },
-
-  createButton: {
-    backgroundColor: "#2563eb",
-    padding: 16,
-    borderRadius: 15,
-    alignItems: "center",
-    marginTop: 18,
-  },
-
-  createText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "800",
   },
 
   list: {

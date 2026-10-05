@@ -4,52 +4,58 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  SafeAreaView,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
+      
       <View style={styles.header}>
         <Text style={styles.logo}>JS</Text>
 
         <Text style={styles.title}>JavaScript</Text>
+
         <Text style={styles.subtitle}>Mastery Quiz</Text>
 
         <Text style={styles.description}>
-          Learn JavaScript through quizzes, flashcards, and custom study decks.
+          Learn JavaScript through quizzes, flashcards, and study decks.
         </Text>
       </View>
 
       <View style={styles.menu}>
+
         <Pressable
           style={styles.primaryButton}
           onPress={() => navigation.navigate("Quiz")}
         >
-          <Text style={styles.primaryText}>Start Quiz</Text>
+          <Text style={styles.primaryText}>
+            Start Quiz
+          </Text>
         </Pressable>
 
         <Pressable
           style={styles.secondaryButton}
           onPress={() => navigation.navigate("Decks")}
         >
-          <Text style={styles.secondaryText}>Study Decks</Text>
+          <Text style={styles.secondaryText}>
+            Study Decks
+          </Text>
         </Pressable>
 
-        <Pressable
-          style={styles.secondaryButton}
-          onPress={() => navigation.navigate("HighScores")}
-        >
-          <Text style={styles.secondaryText}>High Scores</Text>
-        </Pressable>
       </View>
 
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>35+ Questions</Text>
+        <Text style={styles.infoTitle}>
+          10 Random Javascript Questions
+        </Text>
+
         <Text style={styles.infoText}>
           Test your knowledge of JavaScript fundamentals and modern concepts.
         </Text>
       </View>
+
     </SafeAreaView>
   );
 }
@@ -78,7 +84,6 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#172554",
     overflow: "hidden",
-    paddingTop: 22,
     marginBottom: 20,
   },
 

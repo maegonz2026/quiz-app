@@ -4,11 +4,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import HomeScreen from "./screens/HomeScreen";
 import DecksScreen from "./screens/DecksScreen";
-import CreateDeckScreen from "./screens/CreateDeckScreen";
 import FlashcardScreen from "./screens/FlashcardScreen";
 import QuizScreen from "./screens/QuizScreen";
 import ResultsScreen from "./screens/ResultsScreen";
-import HighScoresScreen from "./screens/HighScoresScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +14,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Home"
         screenOptions={{
           headerStyle: {
             backgroundColor: "#172554",
@@ -39,12 +38,6 @@ export default function App() {
         />
 
         <Stack.Screen
-          name="CreateDeck"
-          component={CreateDeckScreen}
-          options={{ title: "Create Study Deck" }}
-        />
-
-        <Stack.Screen
           name="Flashcards"
           component={FlashcardScreen}
           options={{ title: "Flashcards" }}
@@ -63,12 +56,6 @@ export default function App() {
             title: "Quiz Results",
             headerBackVisible: false,
           }}
-        />
-
-        <Stack.Screen
-          name="HighScores"
-          component={HighScoresScreen}
-          options={{ title: "High Scores" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

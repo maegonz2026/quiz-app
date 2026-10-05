@@ -1,17 +1,25 @@
 import React, { useState } from "react";
+
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
-  SafeAreaView,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import questions from "../data/questions";
 
-export default function FlashcardScreen() {
+export default function FlashcardScreen({ route }) {
+  const { deck } = route.params;
+
+  const deckQuestions = questions.filter((question) =>
+    deck.questionIds.includes(question.id)
+  );
+
   const [cards] = useState(() =>
-    [...questions].sort(() => Math.random() - 0.5).slice(0, 10)
+    [...deckQuestions].sort(() => Math.random() - 0.5)
   );
 
   const [index, setIndex] = useState(0);
@@ -29,6 +37,10 @@ export default function FlashcardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.deckTitle}>
+        {deck.title}
+      </Text>
+
       <Text style={styles.counter}>
         Card {index + 1} of {cards.length}
       </Text>
@@ -52,12 +64,18 @@ export default function FlashcardScreen() {
         )}
 
         <Text style={styles.tap}>
-          Tap card to {flipped ? "see question" : "flip answer"}
+          Tap card to{" "}
+          {flipped ? "see question" : "flip answer"}
         </Text>
       </Pressable>
 
-      <Pressable style={styles.button} onPress={nextCard}>
-        <Text style={styles.buttonText}>Next Card</Text>
+      <Pressable
+        style={styles.button}
+        onPress={nextCard}
+      >
+        <Text style={styles.buttonText}>
+          Next Card
+        </Text>
       </Pressable>
     </SafeAreaView>
   );
@@ -69,6 +87,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
     padding: 20,
     justifyContent: "center",
+  },
+
+  deckTitle: {
+    textAlign: "center",
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#172554",
+    marginBottom: 5,
   },
 
   counter: {

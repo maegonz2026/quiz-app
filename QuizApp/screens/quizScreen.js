@@ -4,17 +4,30 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import questions from "../data/questions";
 
 function shuffle(array) {
-  return [...array].sort(() => Math.random() - 0.5);
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
 }
 
 export default function QuizScreen({ navigation }) {
-  const [quizQuestions] = useState(() => shuffle(questions).slice(0, 10));
+  const [quizQuestions] = useState(() =>
+    shuffle(questions).slice(0, 10)
+  );
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -34,9 +47,14 @@ export default function QuizScreen({ navigation }) {
   }
 
   function nextQuestion() {
+    if (selectedAnswer === null) {
+      return;
+    }
+
     if (currentIndex === quizQuestions.length - 1) {
       const finalScore =
-        score + (selectedAnswer === currentQuestion.answer ? 1 : 0);
+        score +
+        (selectedAnswer === currentQuestion.answer ? 1 : 0);
 
       navigation.replace("Results", {
         score: finalScore,
@@ -52,91 +70,119 @@ export default function QuizScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.progressContainer}>
-        <Text style={styles.progress}>
-          Question {currentIndex + 1} of {quizQuestions.length}
-        </Text>
-
-        <Text style={styles.score}>Score: {score}</Text>
-      </View>
-
-      <View style={styles.progressBar}>
-        <View
-          style={[
-            styles.progressFill,
-            {
-              width: `${((currentIndex + 1) / quizQuestions.length) * 100}%`,
-            },
-          ]}
-        />
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.questionNumber}>
-          JAVASCRIPT QUESTION
-        </Text>
-
-        <Text style={styles.question}>
-          {currentQuestion.question}
-        </Text>
-      </View>
-
-      <View style={styles.answers}>
-        {currentQuestion.options.map((option) => {
-          const isSelected = selectedAnswer === option;
-          const isCorrect = option === currentQuestion.answer;
-
-          let buttonStyle = styles.answerButton;
-          let textStyle = styles.answerText;
-
-          if (selectedAnswer !== null && isCorrect) {
-            buttonStyle = [styles.answerButton, styles.correct];
-            textStyle = [styles.answerText, styles.correctText];
-          } else if (isSelected) {
-            buttonStyle = [styles.answerButton, styles.wrong];
-            textStyle = [styles.answerText, styles.wrongText];
-          }
-
-          return (
-            <Pressable
-              key={option}
-              style={buttonStyle}
-              onPress={() => selectAnswer(option)}
-            >
-              <Text style={textStyle}>{option}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {selectedAnswer !== null && (
-        <View style={styles.feedback}>
-          <Text style={styles.feedbackTitle}>
-            {selectedAnswer === currentQuestion.answer
-              ? "Correct!"
-              : "Not quite!"}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        <View style={styles.progressContainer}>
+          <Text style={styles.progress}>
+            Question {currentIndex + 1} of {quizQuestions.length}
           </Text>
 
-          <Text style={styles.feedbackText}>
-            {currentQuestion.explanation}
+          <Text style={styles.score}>
+            Score: {score}
           </Text>
         </View>
-      )}
 
-      <Pressable
-        style={[
-          styles.nextButton,
-          selectedAnswer === null && styles.disabled,
-        ]}
-        disabled={selectedAnswer === null}
-        onPress={nextQuestion}
-      >
-        <Text style={styles.nextText}>
-          {currentIndex === quizQuestions.length - 1
-            ? "Finish Quiz"
-            : "Next Question"}
-        </Text>
-      </Pressable>
+        <View style={styles.progressBar}>
+          <View
+            style={[
+              styles.progressFill,
+              {
+                width: `${
+                  ((currentIndex + 1) / quizQuestions.length) * 100
+                }%`,
+              },
+            ]}
+          />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.questionNumber}>
+            JAVASCRIPT QUESTION
+          </Text>
+
+          <Text style={styles.question}>
+            {currentQuestion.question}
+          </Text>
+        </View>
+
+        <View style={styles.answers}>
+          {currentQuestion.options.map((option) => {
+            const isSelected = selectedAnswer === option;
+            const isCorrect = option === currentQuestion.answer;
+
+            let buttonStyle = styles.answerButton;
+            let textStyle = styles.answerText;
+
+            if (selectedAnswer !== null && isCorrect) {
+              buttonStyle = [
+                styles.answerButton,
+                styles.correct,
+              ];
+
+              textStyle = [
+                styles.answerText,
+                styles.correctText,
+              ];
+            }
+
+            else if (isSelected) {
+              buttonStyle = [
+                styles.answerButton,
+                styles.wrong,
+              ];
+
+              textStyle = [
+                styles.answerText,
+                styles.wrongText,
+              ];
+            }
+
+            return (
+              <Pressable
+                key={option}
+                style={buttonStyle}
+                onPress={() => selectAnswer(option)}
+                disabled={selectedAnswer !== null}
+              >
+                <Text style={textStyle}>
+                  {option}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {selectedAnswer !== null && (
+          <View style={styles.feedback}>
+            <Text style={styles.feedbackTitle}>
+              {selectedAnswer === currentQuestion.answer
+                ? "Correct!"
+                : "Not quite!"}
+            </Text>
+
+            <Text style={styles.feedbackText}>
+              {currentQuestion.explanation}
+            </Text>
+          </View>
+        )}
+
+        <Pressable
+          style={[
+            styles.nextButton,
+            selectedAnswer === null && styles.disabled,
+          ]}
+          disabled={selectedAnswer === null}
+          onPress={nextQuestion}
+        >
+          <Text style={styles.nextText}>
+            {currentIndex === quizQuestions.length - 1
+              ? "Finish Quiz"
+              : "Next Question"}
+          </Text>
+        </Pressable>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -145,7 +191,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8fafc",
+  },
+
+  scrollContent: {
     padding: 20,
+    paddingBottom: 30,
   },
 
   progressContainer: {
@@ -246,6 +296,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 15,
     marginTop: 15,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
   },
 
   feedbackTitle: {
@@ -265,7 +317,7 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderRadius: 15,
     alignItems: "center",
-    marginTop: "auto",
+    marginTop: 20,
   },
 
   disabled: {

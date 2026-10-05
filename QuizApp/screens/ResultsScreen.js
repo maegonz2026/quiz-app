@@ -4,8 +4,9 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  SafeAreaView,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ResultsScreen({ navigation, route }) {
   const { score, total } = route.params;
